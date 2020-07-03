@@ -30,6 +30,9 @@ public class OrderCreatedEventConsumer {
     @Value("${consumer.group.id}")
     String consumerGroupId;
 
+    @Value("${polling.duration.timeout}")
+    int pollingDurationTimeout;
+
     public void consume() {
         Map<String, String> consumerProperties = new HashMap<>();
 
@@ -46,7 +49,7 @@ public class OrderCreatedEventConsumer {
 
         try {
             while (true) {
-                ConsumerRecords<Integer, String> records = consumer.poll(Duration.ofSeconds(5));
+                ConsumerRecords<Integer, String> records = consumer.poll(Duration.ofSeconds(pollingDurationTimeout));
                 System.out.println("Shipment Service polling for topic : "+topicName);
                 for (ConsumerRecord<Integer, String> record : records) {
                     System.out.println("Key" + " :: " + record.key()+ ", Value" + " :: " + record.value());
